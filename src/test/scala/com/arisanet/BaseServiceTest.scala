@@ -4,7 +4,7 @@ import akka.http.scaladsl.testkit.ScalatestRouteTest
 import de.heikoseeberger.akkahttpcirce.CirceSupport
 import com.arisanet.restapi.http.HttpService
 import com.arisanet.restapi.models.UserEntity
-import com.arisanet.restapi.services.{AuthService, UsersService}
+import com.arisanet.restapi.services.{AuthService, UsersService, MeasurementEventService}
 import com.arisanet.restapi.utils.DatabaseService
 import com.arisanet.utils.InMemoryPostgresStorage._
 import org.scalatest._
@@ -21,7 +21,8 @@ trait BaseServiceTest extends WordSpec with Matchers with ScalatestRouteTest wit
 
   val usersService = new UsersService(databaseService)
   val authService = new AuthService(databaseService)(usersService)
-  val httpService = new HttpService(usersService, authService)
+  val measurementEventService = new MeasurementEventService(databaseService)
+  val httpService = new HttpService(usersService, authService,measurementEventService)
 
   def provisionUsersList(size: Int): Seq[UserEntity] = {
     val savedUsers = (1 to size).map { _ =>

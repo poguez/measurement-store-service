@@ -14,6 +14,9 @@ libraryDependencies ++= {
     "de.heikoseeberger" %% "akka-http-circe" % "1.6.0",
 
     "com.typesafe.slick" %% "slick" % slickVersion,
+    "com.typesafe.slick" %% "slick-codegen" % slickVersion % "compile",
+
+
     "org.postgresql" % "postgresql" % "9.4-1201-jdbc41",
     "org.flywaydb" % "flyway-core" % "3.2.1",
 
@@ -38,3 +41,18 @@ dockerExposedPorts := Seq(9004)
 dockerEntrypoint := Seq("bin/%s" format executableScriptName.value, "-Dconfig.resource=docker.conf")
 
 fork in run := true
+
+slick <<= slickCodeGenTask; // register manual sbt command
+
+// code generation task
+lazy val slick = TaskKey[Seq[File]]("gen-tables")
+lazy val slickCodeGenTask = (sourceManaged, dependencyClasspath in Compile, runner in Compile, streams) map { (dir, cp, r, s) =>
+  val outputDir = (dir / "slick").getPath // place generated files in sbt's managed sources folder
+val url = "jdbc:postgresql://localhost:5432/event-rest-service-akka" // connection info
+val jdbcDriver = "org.postgresql.Driver"
+  val slickDriver = "slick.driver.PostgresDriver"
+  val pkg = "com.arisanet.restapi.models"
+  toError(r.run("slick.codegen.SourceCodeGenerator", cp.files, Array(slickDriver, jdbcDriver, url, outputDir, pkg), s.log))
+  val fname = outputDir + "/dao/Tables.scala"
+  Seq(file(fname))
+}

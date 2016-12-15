@@ -2,7 +2,7 @@ package com.arisanet.restapi.utils
 
 import com.typesafe.config.ConfigFactory
 
-trait Config {
+trait   Config {
   private val config = ConfigFactory.load()
   private val httpConfig = config.getConfig("http")
   private val databaseConfig = config.getConfig("database")
