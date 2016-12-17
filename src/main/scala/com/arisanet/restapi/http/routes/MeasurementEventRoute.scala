@@ -8,14 +8,18 @@ import com.arisanet.restapi.models.MeasurementEventEntity
 import com.arisanet.restapi.services.MeasurementEventService
 import com.arisanet.restapi.services.{AuthService}
 import de.heikoseeberger.akkahttpcirce.CirceSupport
-import io.circe.generic.semiauto._
 import io.circe.generic.auto._
 import io.circe.syntax._
+//import io.circe._, io.circe.generic.semiauto._
 
 import scala.concurrent.ExecutionContext
 
 
+//case class MeasurementEvent(id: Option[Long], measurement_id: Option[Long], magnitude: Option[Long], created_at: Option[java.sql.Timestamp]){}
 
+
+//implicit val measurementEventDecoder: Decoder[MeasurementEvent] = deriveDecoder
+//implicit val measurementEventEncoder: Encoder[MeasurementEvent] = deriveEncoder
 
 class MeasurementEventRoute(val authService: AuthService,
                             measurementEventService: MeasurementEventService
@@ -25,9 +29,9 @@ class MeasurementEventRoute(val authService: AuthService,
   import measurementEventService._
 
   val route = pathPrefix("measurement_event") {
+
     path("all") {
       pathEndOrSingleSlash {
-        println("Entro a todos")
         get {
           complete(getMeasurementEvents().map(_.asJson))
         }
@@ -35,7 +39,6 @@ class MeasurementEventRoute(val authService: AuthService,
     }~
     pathPrefix(IntNumber) { id =>
       pathEndOrSingleSlash {
-        println("Entro por id")
         get {
           complete(getMeasurementEventById(id).map(_.asJson))
         }

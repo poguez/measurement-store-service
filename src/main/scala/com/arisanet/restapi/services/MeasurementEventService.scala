@@ -3,7 +3,6 @@ package com.arisanet.restapi.services
 import com.arisanet.restapi.models.db.MeasurementEventEntityTable
 import com.arisanet.restapi.models.MeasurementEventEntity
 import com.arisanet.restapi.utils.DatabaseService
-import com.sun.xml.internal.bind.v2.TODO
 
 import scala.concurrent.{ExecutionContext, Future}
 

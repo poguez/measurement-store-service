@@ -7,14 +7,26 @@ libraryDependencies ++= {
   val akkaV = "2.4.11"
   val scalaTestV = "3.0.0"
   val slickVersion = "3.1.1"
-  val circeV = "0.5.1"
+  val circeV = "0.6.1"
   Seq(
     "com.typesafe.akka" %% "akka-http-core" % akkaV,
     "com.typesafe.akka" %% "akka-http-experimental" % akkaV,
-    "de.heikoseeberger" %% "akka-http-circe" % "1.6.0",
+    "de.heikoseeberger" %% "akka-http-circe" % "1.11.0",
+
 
     "com.typesafe.slick" %% "slick" % slickVersion,
     "com.typesafe.slick" %% "slick-codegen" % slickVersion % "compile",
+    "com.github.tminglei" %% "slick-pg" % "0.14.4",
+    "com.typesafe.slick" %% "slick" % "3.1.1",
+    "com.github.tminglei" %% "slick-pg" % "0.15.0-M3",
+    "com.github.tminglei" %% "slick-pg_joda-time" % "0.15.0-M3",
+    "com.github.tminglei" %% "slick-pg_circe-json" % "0.15.0-M3",
+    "com.github.tminglei" %% "slick-pg_jts" % "0.15.0-M3",
+    "com.github.tminglei" %% "slick-pg_json4s" % "0.15.0-M3",
+    "com.github.tminglei" %% "slick-pg_play-json" % "0.15.0-M3",
+    "com.github.tminglei" %% "slick-pg_spray-json" % "0.15.0-M3",
+    "com.github.tminglei" %% "slick-pg_argonaut" % "0.15.0-M3",
+
 
 
     "org.postgresql" % "postgresql" % "9.4-1201-jdbc41",
@@ -44,15 +56,15 @@ fork in run := true
 
 slick <<= slickCodeGenTask; // register manual sbt command
 
-// code generation task
-lazy val slick = TaskKey[Seq[File]]("gen-tables")
-lazy val slickCodeGenTask = (sourceManaged, dependencyClasspath in Compile, runner in Compile, streams) map { (dir, cp, r, s) =>
+// code generation task that calls the customized code generator
+lazy val slick = taskKey[Seq[File]]("gen-tables")
+lazy val slickCodeGenTask = Def.task {
+  val dir = sourceManaged.value
+  val cp = (dependencyClasspath in Compile).value
+  val r = (runner in Compile).value
+  val s = streams.value
   val outputDir = (dir / "slick").getPath // place generated files in sbt's managed sources folder
-val url = "jdbc:postgresql://localhost:5432/event-rest-service-akka" // connection info
-val jdbcDriver = "org.postgresql.Driver"
-  val slickDriver = "slick.driver.PostgresDriver"
-  val pkg = "com.arisanet.restapi.models"
-  toError(r.run("slick.codegen.SourceCodeGenerator", cp.files, Array(slickDriver, jdbcDriver, url, outputDir, pkg), s.log))
-  val fname = outputDir + "/dao/Tables.scala"
+  toError(r.run("demo.CustomizedCodeGenerator", cp.files, Array(outputDir), s.log))
+  val fname = outputDir + "/demo/Tables.scala"
   Seq(file(fname))
 }
