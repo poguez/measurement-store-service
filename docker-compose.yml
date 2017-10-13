@@ -1,0 +1,24 @@
+version: '2'
+services:
+  db:
+    image: postgres:9.5
+    volumes:
+      - './create_database.sql:/create_database.sql'
+    environment:
+      - "POSTGRESQL_PASS=editpassword"
+    ports:
+      - "5432"
+
+  web:
+      image: classorchestrationapi:1.0.0
+      environment:
+        PORT: 9000
+        PSQL_URL: 'jdbc:postgresql://db:5432/event-rest-service-akka'
+        PSQL_USER: 'postgres'
+        PSQL_PASSWORD: 'password'
+        DB_PASSWORD: 'password'
+
+      ports:
+        - '9000:9000'
+      links:
+        - db

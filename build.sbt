@@ -12,8 +12,6 @@ libraryDependencies ++= {
     "com.typesafe.akka" %% "akka-http-core" % akkaV,
     "com.typesafe.akka" %% "akka-http-experimental" % akkaV,
     "de.heikoseeberger" %% "akka-http-circe" % "1.11.0",
-
-
     "com.typesafe.slick" %% "slick" % slickVersion,
     "com.typesafe.slick" %% "slick-codegen" % slickVersion % "compile",
     "com.github.tminglei" %% "slick-pg" % "0.14.4",
@@ -26,19 +24,13 @@ libraryDependencies ++= {
     "com.github.tminglei" %% "slick-pg_play-json" % "0.15.0-M3",
     "com.github.tminglei" %% "slick-pg_spray-json" % "0.15.0-M3",
     "com.github.tminglei" %% "slick-pg_argonaut" % "0.15.0-M3",
-
-
-
     "org.postgresql" % "postgresql" % "9.4-1201-jdbc41",
     "org.flywaydb" % "flyway-core" % "3.2.1",
-
     "com.zaxxer" % "HikariCP" % "2.4.5",
     "org.slf4j" % "slf4j-nop" % "1.6.4",
-
     "io.circe" %% "circe-core" % circeV,
     "io.circe" %% "circe-generic" % circeV,
     "io.circe" %% "circe-parser" % circeV,
-
     "org.scalatest" %% "scalatest" % scalaTestV % "test",
     "com.typesafe.akka" %% "akka-http-testkit" % akkaV % "test",
     "ru.yandex.qatools.embed" % "postgresql-embedded" % "1.15" % "test"
