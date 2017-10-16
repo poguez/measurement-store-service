@@ -11,8 +11,16 @@ class MeasurementEventService(val databaseService: DatabaseService)(implicit exe
   import databaseService._
   import databaseService.driver.api._
 
-  def getMeasurementEvents(): Future[Seq[MeasurementEventEntity]] = db.run(measurementEvents.result)
-  def getMeasurementEventById(id: Long): Future[Option[MeasurementEventEntity]] = db.run(measurementEvents.filter(_.id === id).result.headOption)
-  def createMeasurementEvent(measurementEvent: MeasurementEventEntity): Future[MeasurementEventEntity] = db.run(measurementEvents returning measurementEvents += measurementEvent)
+  def getMeasurementEvents(): Future[Seq[MeasurementEventEntity]] =
+    db.run(measurementEvents.result)
+
+  def getLastMeasurementEventFor(measurement_id: Long): Future[Option[MeasurementEventEntity]] =
+    db.run(measurementEvents.filter(_.measurement_id === measurement_id).sortBy(_.created_at.desc.nullsFirst).result.headOption)
+
+  def getMeasurementEventById(id: Long): Future[Option[MeasurementEventEntity]] =
+    db.run(measurementEvents.filter(_.id === id).result.headOption)
+
+  def createMeasurementEvent(measurementEvent: MeasurementEventEntity): Future[MeasurementEventEntity] =
+    db.run(measurementEvents returning measurementEvents += measurementEvent)
 
 }

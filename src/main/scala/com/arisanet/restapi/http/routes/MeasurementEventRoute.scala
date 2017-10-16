@@ -2,11 +2,10 @@ package com.arisanet.restapi.http.routes
 
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Directives._
-import akka.http.scaladsl.server.PathMatchers.IntNumber
 import com.arisanet.restapi.http.SecurityDirectives
 import com.arisanet.restapi.models.MeasurementEventEntity
 import com.arisanet.restapi.services.MeasurementEventService
-import com.arisanet.restapi.services.{AuthService}
+import com.arisanet.restapi.services.AuthService
 import de.heikoseeberger.akkahttpcirce.CirceSupport
 import io.circe.generic.auto._
 import io.circe.syntax._
@@ -29,7 +28,13 @@ class MeasurementEventRoute(val authService: AuthService,
   import measurementEventService._
 
   val route = pathPrefix("measurement_event") {
-
+    pathPrefix("last" / IntNumber){ measurement_id =>
+      pathEndOrSingleSlash{
+        get{
+          complete(getLastMeasurementEventFor(measurement_id).map(_.asJson))
+        }
+      }
+    }~
     path("all") {
       pathEndOrSingleSlash {
         get {
