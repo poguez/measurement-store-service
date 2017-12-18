@@ -20,7 +20,11 @@ class MeasurementEventService(val databaseService: DatabaseService)(implicit exe
   def getMeasurementEventById(id: Long): Future[Option[MeasurementEventEntity]] =
     db.run(measurementEvents.filter(_.id === id).result.headOption)
 
+  def getMeasurementEventByArea(measurement_area: Long): Future[Option[MeasurementEventEntity]] =
+    db.run(measurementEvents.filter(_.measurement_area === measurement_area).sortBy(_.created_at.desc.nullsFirst).result.headOption)
+
   def createMeasurementEvent(measurementEvent: MeasurementEventEntity): Future[MeasurementEventEntity] =
     db.run(measurementEvents returning measurementEvents += measurementEvent)
 
 }
+
