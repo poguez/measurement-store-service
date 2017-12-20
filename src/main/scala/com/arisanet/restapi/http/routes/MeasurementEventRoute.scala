@@ -14,7 +14,7 @@ import io.circe.syntax._
 import scala.concurrent.ExecutionContext
 
 
-//case class MeasurementEvent(id: Option[Long], measurement_id: Option[Long], magnitude: Option[Long], created_at: Option[java.sql.Timestamp]){}
+//case class MeasurementEvent(id: Option[Long], measurement_type_id: Option[Long], magnitude: Option[Long], created_at: Option[java.sql.Timestamp]){}
 
 
 //implicit val measurementEventDecoder: Decoder[MeasurementEvent] = deriveDecoder
@@ -27,18 +27,32 @@ class MeasurementEventRoute(val authService: AuthService,
   import StatusCodes._
   import measurementEventService._
 
-  val route = pathPrefix("measurement_event") {
-    pathPrefix("last" / IntNumber){ measurement_id =>
+  val route = pathPrefix("measurement-event") {
+    pathPrefix("last" / IntNumber){ measurement_type_id =>
       pathEndOrSingleSlash{
         get{
-          complete(getLastMeasurementEventFor(measurement_id).map(_.asJson))
+          complete(getLastMeasurementEventFor(measurement_type_id).map(_.asJson))
         }
       }
     }~
     path("all") {
       pathEndOrSingleSlash {
         get {
-          complete(getMeasurementEvents().map(_.asJson))
+          complete(getAllMeasurementEvents().map(_.asJson))
+        }
+      }
+    }~
+    pathPrefix("area" / IntNumber){ measurement_area =>
+      pathEndOrSingleSlash{
+        get{
+          complete(getMeasurementEventsByArea(measurement_area).map(_.asJson))
+        }
+      }~
+      pathPrefix("type" / IntNumber) { measurement_type_id =>
+        pathEndOrSingleSlash {
+          get {
+            complete(getMeasurementEventsByAreaAndType(measurement_area, measurement_type_id).map(_.asJson))
+          }
         }
       }
     }~

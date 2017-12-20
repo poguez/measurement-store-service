@@ -23,12 +23,12 @@ trait MeasurementEventEntityTable {
 
   class MeasurementEvent(tag: Tag) extends Table[MeasurementEventEntity](tag, "measurement_events") {
     def id = column [Option[Long]]("id", O.PrimaryKey, O.AutoInc)
-    def measurement_id = column[Option[Long]]("measurement_id")
+    def measurement_type_id = column[Option[Long]]("measurement_type_id")
     def magnitude = column[Option[Double]]("magnitude")
     def measurement_area = column[Option[Long]]("measurement_area")
     def created_at = column[Option[Timestamp]]("created_at", O.Default(Some(new Timestamp(DateTime.now().getMillis))))
 
-    def * = (id, measurement_id, magnitude, measurement_area, created_at) <> ((MeasurementEventEntity.apply _).tupled, MeasurementEventEntity.unapply)
+    def * = (id, measurement_type_id, magnitude, measurement_area, created_at) <> ((MeasurementEventEntity.apply _).tupled, MeasurementEventEntity.unapply)
 
   }
 
